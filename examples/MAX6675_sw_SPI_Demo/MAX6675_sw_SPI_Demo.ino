@@ -36,7 +36,7 @@ void setup()
   /* start MAX6675 */
   myMAX6675.begin();
 
-  while (myMAX6675.getChipID(myMAX6675.readRawData()))
+  while (myMAX6675.getChipID())
   {
     Serial.println("MAX6675 error");
     delay(5000);
@@ -50,19 +50,14 @@ void loop()
 
   Serial.println("Chip ID:" + myMAX6675.getChipID(rawData));
 
-  if (myMAX6675.detectThermocouple(rawData) == true)
-  {
-    Serial.println("K-Thermocouple is connected to MAX6675 terminals 'T+' & 'T-'");
-  }
-  else
-  {
-    Serial.println("K-Thermocouple is broken, unplugged or MAX6675 'T-' terminal is not grounded");
-  }
+  if   (myMAX6675.detectThermocouple(rawData) == true) Serial.println("K-Thermocouple is connected to MAX6675 terminals 'T+' & 'T-'");
+  else                                                 Serial.println("K-Thermocouple is broken, unplugged or 'T-' terminal is not grounded");
 
   temperature = myMAX6675.getTemperature(rawData);
 
   Serial.print("Temperature: ");
-  Serial.println(temperature);
+  if   (temperature != MAX6675_ERROR) Serial.println(temperature, 1);
+  else                                Serial.println("xx");           //thermocouple broken, unplugged or 'T-' terminal is not grounded
 
   delay(5000);
 }
