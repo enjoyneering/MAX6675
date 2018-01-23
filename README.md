@@ -1,4 +1,4 @@
-This is an Arduino library for 12-bit MAX6675 K-thermocouple to digital converter with cold junction compensation & maximum sampling rate about 4Hz. Can work with wardware & software/bitbang SPI.
+This is an Arduino library for 12-bit MAX6675 K-thermocouple to digital converter with cold junction compensation & maximum sampling rate about 4Hz. Can work with wardware & software/bitbang 4Mhz SPI.
 
 - K-type thermocouples have an absolute accuracy of around ±2°C
 - Measurement tempereture range 0°C...+1024°C with 0.25°C resolution
