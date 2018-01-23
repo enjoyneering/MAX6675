@@ -11,6 +11,9 @@
   - Keep K-type thermocouple cold junction & MAX6675 at the same temperature
   - Avoid placing heat-generating devices or components near the converter
     because this may produce errors
+    
+  GNU GPL license, all text above must be included in any redistribution, see link below for details:
+  - https://www.gnu.org/licenses/licenses.html
 */
 /***************************************************************************************************/
 #include <MAX6675.h>
