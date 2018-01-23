@@ -6,7 +6,7 @@
    - K-type thermocouples have an absolute accuracy of around ±2°C
    - Measurement tempereture range 0°C...+1024°C with 0.25°C resolution
    - Cold junction compensation range -20°C...+85°C
-   - Keep k-type thermocouple cold junction & MAX6675 at the same temperature
+   - Keep K-type thermocouple cold junction & MAX6675 at the same temperature
    - Avoid placing heat-generating devices or components near the converter
      because this may produce errors
      
@@ -181,7 +181,7 @@ float MAX6675::getTemperature(uint16_t rawValue)
 
     - max SPI master clock speed is equal with board speed
       (16000000UL for 5V 16MHz/ProMini), but MAX6675 max speed is only 4.3MHz
-    - SPI_MODE0 -> capture data on clock's falling edge.
+    - SPI_MODE0 -> capture data on clock's falling edge
 */
 /**************************************************************************/
 uint16_t MAX6675::readRawData(void)
@@ -193,13 +193,13 @@ uint16_t MAX6675::readRawData(void)
   digitalWrite(_cs, HIGH);                                               //start measurement/conversion
   delay(MAX6675_CONVERSION_TIME);
 
-  digitalWrite(_cs, LOW);                                                //set CS low to enable serial interface
+  digitalWrite(_cs, LOW);                                                //set CS low to enable spi interface for MAX6675
 
   switch (_useHardwareSPI)                                               //true -> hw spi, false ->sw spi
   {
     case true:
       SPI.beginTransaction(SPISettings(4000000UL, MSBFIRST, SPI_MODE0)); //speed 4MHz, read msb first, spi mode 0, see note
-      rawData = SPI.transfer16(0x0000);                                  //MAX6675 has read only spi & mosi not connected, doesn't metter what to send
+      rawData = SPI.transfer16(0x0000);                                  //chip has read only spi & mosi not connected, doesn't metter what to send
       break;
 
     case false:
@@ -212,7 +212,7 @@ uint16_t MAX6675::readRawData(void)
       break;
   }  
 
-  digitalWrite(_cs, HIGH);                                               //disables the serial interface, but it will initiate measurement/conversion
+  digitalWrite(_cs, HIGH);                                               //disables spi interface, but it will initiate measurement/conversion
 
   if (_useHardwareSPI == true) SPI.endTransaction();                     //call to de-asserting hw chip select & free hw spi for other slaves
 
