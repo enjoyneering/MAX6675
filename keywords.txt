@@ -1,15 +1,22 @@
 #######################################
-# Datatypes             (KEYWORD1)
+# Syntax Coloring Map MAX6675
 #######################################
 
-MAX6675	KEYWORD1
+#######################################
+# Datatypes	(KEYWORD1)
+#######################################
+
+MAX6675	KEYWORD1	MAX6675
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-
-begin	KEYWORD2
+begin			KEYWORD2
 detectThermocouple	KEYWORD2
-getChipID	KEYWORD2
-getTemperature	KEYWORD2
-readRawData	KEYWORD2
+getChipID		KEYWORD2
+getTemperature		KEYWORD2
+readRawData		KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
