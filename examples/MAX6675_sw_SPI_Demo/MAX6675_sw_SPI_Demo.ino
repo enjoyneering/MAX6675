@@ -29,7 +29,7 @@ so  - serial data output
 sck - serial clock input
 */
 
-MAX6675 myMAX6675(2, 4, 7); //use any digital pins
+MAX6675 myMAX6675(2, 4, 7); //for ESP8266 use D3, D4, D7
 
 
 void setup()
