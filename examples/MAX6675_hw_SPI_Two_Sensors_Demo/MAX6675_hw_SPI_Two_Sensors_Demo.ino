@@ -29,8 +29,8 @@ MAX6675(cs)
 cs  - chip select, if CS low serial interface is enabled
 */
 
-MAX6675 myMAX6675_01(4);
-MAX6675 myMAX6675_02(5);
+MAX6675 myMAX6675_01(4); //for ESP8266 use D4
+MAX6675 myMAX6675_02(5); //for ESP8266 use D3
 
 
 void setup()
