@@ -57,7 +57,7 @@ MAX6675(cs)
 cs  - chip select, if CS low serial interface is enabled
 */
 
-MAX6675           myMAX6675(4);
+MAX6675           myMAX6675(4); //for ESP8266 use D4
 LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
 
 
