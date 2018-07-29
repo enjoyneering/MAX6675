@@ -3,24 +3,29 @@
 #######################################
 
 #######################################
-# Datatypes		(KEYWORD1)
+# Datatypes	(KEYWORD1)
 #######################################
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-begin			KEYWORD2
+begin	KEYWORD2
 detectThermocouple	KEYWORD2
-getChipID		KEYWORD2
-getTemperature		KEYWORD2
-readRawData		KEYWORD2
+getChipID	KEYWORD2
+getTemperature	KEYWORD2
+readRawData	KEYWORD2
 
 #######################################
-# Instances		(KEYWORD2)
+# Instances	(KEYWORD2)
 #######################################
-MAX6675			KEYWORD2
+
+MAX6675	KEYWORD2
+MAX6675Soft	KEYWORD2 
 
 #######################################
 # Constants (LITERAL1)
 #######################################
+
+MAX6675_ID	LITERAL1
+MAX6675_ERROR	LITERAL1
