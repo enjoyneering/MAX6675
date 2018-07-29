@@ -1,26 +1,35 @@
 /***************************************************************************************************/
 /*
    This is an Arduino library for 12-bit MAX6675 K-Thermocouple to Digital Converter
-   with Cold Junction Compensation & maximum sampling rate ~4...5Hz
+   with Cold Junction Compensation conneted to hardware 4Mhz SPI with maximum sampling
+   rate ~4..5Hz.
 
+   - MAX6675 power supply voltage is 3.0 - 5.5v
    - K-type thermocouples have an absolute accuracy of around ±2°C
    - Measurement tempereture range 0°C...+1024°C with 0.25°C resolution
    - Cold junction compensation range -20°C...+85°C
    - Keep K-type thermocouple cold junction & MAX6675 at the same temperature
    - Avoid placing heat-generating devices or components near the converter
      because this may produce errors
+   - It is strongly recommended to add a 10nF/0.01mF ceramic surface-mount capacitor, placed across
+     the T+ and T- pins, to filter noise on the thermocouple lines.
      
    written by : enjoyneering79
    sourse code: https://github.com/enjoyneering/MAX6675
 
-   This sensor can work with hardware SPI bus, specials pins are required to interface
+   This sensor uses SPI bus to communicate, specials pins are required to interface
+   Board:                                    MOSI        MISO        SCLK         SS, don't use for CS   Level
+   Uno, Mini, Pro, ATmega168, ATmega328..... 11          12          13           10                     5v
+   Mega, Mega2560, ATmega1280, ATmega2560... 51          50          52           53                     5v
+   Due, SAM3X8E............................. ICSP4       ICSP1       ICSP3        x                      3.3v
+   Leonardo, ProMicro, ATmega32U4........... 16          14          15           x                      5v
+   Blue Pill, STM32F103xxxx boards.......... PA17        PA6         PA5          PA4                    3v
+   NodeMCU 1.0, WeMos D1 Mini............... GPIO13/D7   GPIO12/D6   GPIO14/D5    GPIO15/D8*             3v/5v
+   ESP32.................................... GPIO23/D23  GPIO19/D19  GPIO18/D18   x                      3v
 
-   Connect chip to pins:    SCLK        MOSI        don't use SS for CS  don't use MISO for CS
-   Uno, Mini, Pro:          13          12          10                   11
-   Mega2560, Due:           52          51          53                   50
-   Leonardo, ProMicro:      15          16          x                    14
-   NodeMCU 1.0:             GPIO14/D5   GPIO13/D7   GPIO15/D8            GPIO12/D6
-   WeMos D1 Mini:           GPIO14/D5   GPIO13/D7   GPIO15/D8            GPIO12/D6 
+                                            *if GPIO2/D4 or GPIO0/D3 used for for CS, apply an external 25kOhm
+                                             pullup-down resistor
+
 
   GNU GPL license, all text above must be included in any redistribution, see link below for details:
   - https://www.gnu.org/licenses/licenses.html
@@ -29,74 +38,34 @@
 
 #include <MAX6675.h>
 
-
 /**************************************************************************/
 /*
     MAX6675()
 
-    Constructor for software/bit-bang serial interface
+    Constructor for hardware read only SPI
 
     NOTE:
-    cs  - chip select, set CS low to enable the serial interface
-    so  - serial data output
-    sck - serial clock input
-*/
-/**************************************************************************/
-MAX6675::MAX6675(uint8_t cs, uint8_t so, uint8_t sck)
-{
-  _useHardwareSPI = false; //false ->sw spi
-
-  _cs  = cs;               //sw ss
-  _so  = so;               //sw miso
-  _sck = sck;              //sw sclk
-}
-
-/**************************************************************************/
-/*
-    MAX6675()
-
-    Constructor for hardware SPI serial interface
-
-    NOTE:
-    - chip select "cs", set CS low to enable the serial interface
+    - cs is chip select, set CS low to enable the serial interface
 */
 /**************************************************************************/
 MAX6675::MAX6675(uint8_t cs)
 {
-  _useHardwareSPI = true; //true -> hw spi
-
-  _cs  = cs;              //hw ss
-  _so  = 0;               //sw miso
-  _sck = 0;               //sw sclk
+  _cs = cs; //cs chip select
 }
 
 /**************************************************************************/
 /*
     begin()
 
-    Initializes & configures gpio for bit-bang or hardware serial interface
-
-    NOTE:
-
+    Initializes & configures hardware SPI
 */
 /**************************************************************************/
 void MAX6675::begin(void)
 {
   pinMode(_cs, OUTPUT);
-  digitalWrite(_cs, HIGH);     //disables the serial interface, but it will initiate measurement/conversion
+  digitalWrite(_cs, HIGH); //disables SPI interface for MAX6675, but it will initiate measurement/conversion
 
-  switch (_useHardwareSPI)     //true -> hw spi, false ->sw spi
-  {
-    case true:
-      SPI.begin();             //setting hardware SCK, MOSI, SS to output, pull SCK, MOSI low & SS high      
-      break;
-
-    case false:
-      pinMode(_so, INPUT);
-      pinMode(_sck, OUTPUT);
-      digitalWrite(_sck, LOW);     
-      break;
-  }
+  SPI.begin();             //setting hardware SCK, MOSI, SS to output, pull SCK, MOSI low & SS high      
 }
 
 /**************************************************************************/
@@ -188,33 +157,20 @@ uint16_t MAX6675::readRawData(void)
 {
   uint16_t rawData = 0;
 
-  digitalWrite(_cs, LOW);                                                //stop  measurement/conversion
-  delay(1);                                                              //4MHz  is 0.25usec, do we need it???
-  digitalWrite(_cs, HIGH);                                               //start measurement/conversion
+  digitalWrite(_cs, LOW);                                            //stop  measurement/conversion
+  delayMicroseconds(1);                                              //4MHz  is 0.25usec, do we need it???
+  digitalWrite(_cs, HIGH);                                           //start measurement/conversion
   delay(MAX6675_CONVERSION_TIME);
 
-  digitalWrite(_cs, LOW);                                                //set CS low to enable spi interface for MAX6675
+  digitalWrite(_cs, LOW);                                            //set CS low to enable SPI interface for MAX6675
 
-  switch (_useHardwareSPI)                                               //true -> hw spi, false ->sw spi
-  {
-    case true:
-      SPI.beginTransaction(SPISettings(4000000UL, MSBFIRST, SPI_MODE0)); //speed 4MHz, read msb first, spi mode 0, see note
-      rawData = SPI.transfer16(0x0000);                                  //chip has read only spi & mosi not connected, doesn't metter what to send
-      break;
+  SPI.beginTransaction(SPISettings(4000000UL, MSBFIRST, SPI_MODE0)); //speed ~4MHz, read MSB first, SPI mode 0, see note
+  rawData = SPI.transfer16(0x0000);                                  //chip has read only SPI & MOSI not connected, so it doesn't metter what to send
+ 
 
-    case false:
-      for (uint8_t i = 0; i < 16; i++)                                   //read 16-bits via software spi, in order MSB->LSB (D15..D0 bit)
-      {
-        digitalWrite(_sck, HIGH);
-        rawData = (rawData << 1) | digitalRead(_so);
-        digitalWrite(_sck, LOW);
-      }
-      break;
-  }  
+  digitalWrite(_cs, HIGH);                                           //disables SPI interface for MAX6675, but it will initiate measurement/conversion
 
-  digitalWrite(_cs, HIGH);                                               //disables spi interface, but it will initiate measurement/conversion
-
-  if (_useHardwareSPI == true) SPI.endTransaction();                     //call to de-asserting hw chip select & free hw spi for other slaves
+  SPI.endTransaction();                                              //de-asserting hw chip select & free hw SPI for other slaves
 
   return rawData;
 }
