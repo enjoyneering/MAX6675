@@ -167,7 +167,6 @@ uint16_t MAX6675::readRawData(void)
   SPI.beginTransaction(SPISettings(4000000UL, MSBFIRST, SPI_MODE0)); //speed ~4MHz, read MSB first, SPI mode 0, see note
   rawData = SPI.transfer16(0x0000);                                  //chip has read only SPI & MOSI not connected, so it doesn't metter what to send
  
-
   digitalWrite(_cs, HIGH);                                           //disables SPI interface for MAX6675, but it will initiate measurement/conversion
 
   SPI.endTransaction();                                              //de-asserting hw chip select & free hw SPI for other slaves
