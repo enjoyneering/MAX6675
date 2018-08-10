@@ -42,6 +42,11 @@
 #include <SPI.h>
 #include <MAX6675.h>
 
+#if defined(ESP8266)
+#include <ESP8266WiFi.h>
+#endif
+
+
 uint16_t rawData_01     = 0;
 uint16_t rawData_02     = 0;
 
@@ -60,6 +65,11 @@ MAX6675 myMAX6675_02(5); //for ESP8266 use D3
 
 void setup()
 {
+  #if defined(ESP8266)
+  WiFi.persistent(false); //disable saving wifi config into SDK flash area
+  WiFi.forceSleepBegin(); //disable swAP & station by calling "WiFi.mode(WIFI_OFF)" & put modem to sleep
+  #endif
+
   Serial.begin(115200);
 
   /* start MAX6675 */
