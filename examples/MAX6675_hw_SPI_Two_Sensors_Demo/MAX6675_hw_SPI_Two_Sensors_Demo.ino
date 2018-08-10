@@ -68,7 +68,7 @@ void setup()
 
   while ((myMAX6675_01.getChipID() != MAX6675_ID) || (myMAX6675_02.getChipID() != MAX6675_ID))
   {
-    Serial.println(F("MAX6675_01 or MAX6675_02 error")); //(F()) saves string to flash & keeps dynamic memory
+    Serial.println(F("MAX6675_01 or MAX6675_02 error")); //(F()) saves string to flash & keeps dynamic memory free
     delay(5000);
   }
   Serial.println(F("MAX6675_01 & MAX6675_02 OK"));
