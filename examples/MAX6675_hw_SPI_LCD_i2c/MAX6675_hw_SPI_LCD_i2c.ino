@@ -97,7 +97,7 @@ void setup()
     delay(5000);
   }
 
-  lcd.print(F("PCF8574 is OK")); //(F()) saves string to flash & keeps dynamic memory
+  lcd.print(F("PCF8574 is OK")); //(F()) saves string to flash & keeps dynamic memory free
   delay(1000);
 
   lcd.clear();
