@@ -1,3 +1,5 @@
+[![license-badge][]][license] ![version] [![stars][]][stargazers]
+
 # MAX6675
 This is an Arduino library for 12-bit MAX6675 K-thermocouple to digital converter with cold junction compensation & maximum sampling rate about 4Hz. Can work with wardware & software/bit-bang SPI & supports all integrated circuit features.
 
@@ -17,3 +19,9 @@ Supports:
 - Arduino ESP8266
 - Arduino ESP32
 - Arduino STM32
+
+[license]:       https://choosealicense.com/licenses/gpl-3.0/
+[license-badge]: https://img.shields.io/aur/license/yaourt.svg
+[version]:       https://img.shields.io/badge/Version-1.2.0-green.svg
+[stars]:         https://img.shields.io/github/stars/enjoyneering/MAX6675.svg
+[stargazers]:    https://github.com/enjoyneering/MAX6675/stargazers
