@@ -25,5 +25,5 @@ Supports:
 [version]:       https://img.shields.io/badge/Version-1.2.0-green.svg
 [stars]:         https://img.shields.io/github/stars/enjoyneering/MAX6675.svg
 [stargazers]:    https://github.com/enjoyneering/MAX6675/stargazers
-[github-issues]: https://img.shields.io/github/enjoyneering/MAX6675.svg
+[github-issues]: https://img.shields.io/github/issues/enjoyneering/MAX6675.svg
 [issues]:        https://github.com/enjoyneering/MAX6675/issues/
