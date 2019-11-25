@@ -168,9 +168,10 @@ uint16_t MAX6675::readRawData(void)
   digitalWrite(_cs, HIGH);                                           //start measurement/conversion
   delay(MAX6675_CONVERSION_TIME);
 
-  digitalWrite(_cs, LOW);                                            //set CS low to enable SPI interface for MAX6675
-
   SPI.beginTransaction(SPISettings(4000000UL, MSBFIRST, SPI_MODE0)); //speed ~4MHz, read MSB first, SPI mode 0, see note
+  
+  digitalWrite(_cs, LOW);                                            //set CS low to enable SPI interface for MAX6675
+  
   rawData = SPI.transfer16(0x0000);                                  //chip has read only SPI & MOSI not connected, so it doesn't metter what to send
  
   digitalWrite(_cs, HIGH);                                           //disables SPI interface for MAX6675, but it will initiate measurement/conversion
