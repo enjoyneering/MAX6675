@@ -113,8 +113,9 @@ uint16_t MAX6675Soft::readRawData(void)
   delay(MAX6675_CONVERSION_TIME);
 
   digitalWrite(_cs, LOW);                        //set CS low to enable SPI interface for MAX6675
+  digitalWrite(_sck, LOW);
 
-  for (int8_t i = 16; i >= 0; i--)               //read 16-bits via software SPI, in order MSB->LSB (D15..D0 bit)
+  for (int8_t i = 16; i > 0; i--)                //read 16-bits via software SPI, in order MSB->LSB (D15..D0 bit)
   {
     digitalWrite(_sck, HIGH);
     rawData = (rawData << 1) | digitalRead(_so);
