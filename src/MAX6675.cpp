@@ -28,6 +28,7 @@
    ESP32.................................... GPIO23/D23  GPIO19/D19  GPIO18/D18   x                      3v
 
                                              *most boards has 10-12kOhm pullup-up resistor on GPIO2/D4 & GPIO0/D3
+                                              for flash & boot
 
    Frameworks & Libraries:
    ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
@@ -153,8 +154,11 @@ float MAX6675::getTemperature(uint16_t rawValue)
     - sequence of all zeros on SO pin means the thermocouple reading is 0°C
     - sequence of all ones  on SO pin means the thermocouple reading is +1023.75°C
 
-    - max SPI master clock speed is equal with board speed
-      (16000000UL for 5V 16MHz/ProMini), but MAX6675 max speed is only 4.3MHz
+    - arduino 8-bit AVR maximum SPI master clock speed is mcu speed/2,
+      for 5v-16MHz/ProMini speed is 16000000/2=8MHz 
+    - arduino ESP8266 maximum SPI master clock speed is 80000000=80MHz
+    - arduino STM32 maximum SPI master clock speed is mcu speed/2,
+      for STM32F103C8 speed is 72000000/2=36MHz
     - SPI_MODE0 -> data available shortly after the rising edge of SCK
 */
 /**************************************************************************/
@@ -162,20 +166,21 @@ uint16_t MAX6675::readRawData(void)
 {
   uint16_t rawData = 0;
 
-  digitalWrite(_cs, LOW);                                            //stop  measurement/conversion
-  delayMicroseconds(1);                                              //4MHz  is 0.25usec, do we need it???
-  digitalWrite(_cs, HIGH);                                           //start measurement/conversion
+  digitalWrite(_cs, LOW);                                          //stop  measurement/conversion
+  delayMicroseconds(1);                                            //4MHz  is 0.25μsec, do we need it???
+  digitalWrite(_cs, HIGH);                                         //start measurement/conversion
+
   delay(MAX6675_CONVERSION_TIME);
 
-  SPI.beginTransaction(SPISettings(4000000UL, MSBFIRST, SPI_MODE0)); //speed ~4MHz, read MSB first, SPI mode 0, see note
-  
-  digitalWrite(_cs, LOW);                                            //set CS low to enable SPI interface for MAX6675
-  
-  rawData = SPI.transfer16(0x0000);                                  //chip has read only SPI & MOSI not connected, so it doesn't metter what to send
- 
-  digitalWrite(_cs, HIGH);                                           //disables SPI interface for MAX6675, but it will initiate measurement/conversion
+  SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0)); //up to 4MHz, read MSB first, SPI mode 0, see note
 
-  SPI.endTransaction();                                              //de-asserting hw chip select & free hw SPI for other slaves
+  digitalWrite(_cs, LOW);                                          //set software CS low to enable SPI interface for MAX6675
+
+  rawData = SPI.transfer16(0x0000);                                //chip has read only SPI & MOSI not connected, so it doesn't metter what to send
+ 
+  digitalWrite(_cs, HIGH);                                         //disables SPI interface for MAX6675, but it will initiate measurement/conversion
+
+  SPI.endTransaction();                                            //de-asserting hardware CS & free hw SPI for other slaves
 
   return rawData;
 }
