@@ -16,6 +16,7 @@
      
    written by : enjoyneering79
    sourse code: https://github.com/enjoyneering/MAX6675
+
    Board:                                     Level
    Uno, Mini, Pro, ATmega168, ATmega328.....  5v
    Mega, Mega2560, ATmega1280, ATmega2560...  5v
@@ -26,6 +27,7 @@
    ESP32....................................  3v
 
                                               *most boards has 10-12kOhm pullup-up resistor on GPIO2/D4 & GPIO0/D3
+                                               for flash & boot
 
    Frameworks & Libraries:
    ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
@@ -113,7 +115,11 @@ uint16_t MAX6675Soft::readRawData(void)
 
   delay(MAX6675_CONVERSION_TIME);
 
-  digitalWrite(_cs, LOW);                        //set CS low to enable SPI interface for MAX667
+  digitalWrite(_cs, LOW);                        //set CS low to enable SPI interface for MAX6675
+
+  #ifdef MAX6675_DISABLE_INTERRUPTS
+  noInterrupts();                                //disable all interrupts for critical operations below
+  #endif
 
   for (int8_t i = 16; i > 0; i--)                //read 16-bits via software SPI, in order MSB->LSB (D15..D0 bit)
   {
@@ -121,6 +127,10 @@ uint16_t MAX6675Soft::readRawData(void)
     rawData = (rawData << 1) | digitalRead(_so); //emulate SPI_MODE0, data available shortly after the rising edge of SCK
     digitalWrite(_sck, LOW);
   }
+
+  #ifdef MAX6675_DISABLE_INTERRUPTS
+  interrupts();                                  //re-enable all interrupts
+  #endif
 
   digitalWrite(_cs, HIGH);                       //disables SPI interface for MAX6675, but it will initiate measurement/conversion
 
