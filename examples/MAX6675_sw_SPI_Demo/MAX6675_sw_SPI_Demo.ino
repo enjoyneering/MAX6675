@@ -25,9 +25,8 @@
    NodeMCU 1.0, WeMos D1 Mini...............  3v/5v*
    ESP32....................................  3v
 
-                                             *if GPIO2/D4 or GPIO0/D3 is used, apply an external
-                                              25kOhm pullup-down resistor otherwise reset & reset button
-                                              may not work
+                                              *most boards has 10-12kOhm pullup-up resistor on GPIO2/D4 & GPIO0/D3
+                                               for flash & boot
 
    Frameworks & Libraries:
    ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
@@ -56,14 +55,14 @@ so  - serial data output
 sck - serial clock input
 */
 
-MAX6675Soft myMAX6675(2, 4, 7); //for ESP8266 use D3, D4, D7
+MAX6675Soft myMAX6675(2, 4, 7); //for ESP8266 change to D3 (fails to BOOT/FLASH if pin LOW), D4 (fails to BOOT/FLASH if pin LOW), D7
 
 
 void setup()
 {
   #if defined(ESP8266)
   WiFi.persistent(false);               //disable saving wifi config into SDK flash area
-  WiFi.forceSleepBegin();               //disable swAP & station by calling "WiFi.mode(WIFI_OFF)" & put modem to sleep
+  WiFi.forceSleepBegin();               //disable AP & station by calling "WiFi.mode(WIFI_OFF)" & put modem to sleep
   #endif
 
   Serial.begin(115200);
