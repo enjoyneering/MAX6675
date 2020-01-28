@@ -24,7 +24,7 @@ Supports:
 
 [license-badge]: https://img.shields.io/badge/License-GPLv3-blue.svg
 [license]:       https://choosealicense.com/licenses/gpl-3.0/
-[version]:       https://img.shields.io/badge/Version-1.3.0-green.svg
+[version]:       https://img.shields.io/badge/Version-1.3.1-green.svg
 [stars]:         https://img.shields.io/github/stars/enjoyneering/MAX6675.svg
 [stargazers]:    https://github.com/enjoyneering/MAX6675/stargazers
 [hit-count]:     http://hits.dwyl.io/enjoyneering/MAX6675.svg
