@@ -155,7 +155,7 @@ float MAX6675::getTemperature(uint16_t rawValue)
 
     - max SPI master clock speed is equal with board speed
       (16000000UL for 5V 16MHz/ProMini), but MAX6675 max speed is only 4.3MHz
-    - SPI_MODE0 -> capture data on clock's falling edge
+    - SPI_MODE0 -> data available shortly after the rising edge of SCK
 */
 /**************************************************************************/
 uint16_t MAX6675::readRawData(void)
