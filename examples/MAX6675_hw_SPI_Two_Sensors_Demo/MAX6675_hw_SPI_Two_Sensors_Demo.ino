@@ -26,9 +26,8 @@
    NodeMCU 1.0, WeMos D1 Mini............... GPIO13/D7   GPIO12/D6   GPIO14/D5    GPIO15/D8*             3v/5v
    ESP32.................................... GPIO23/D23  GPIO19/D19  GPIO18/D18   x                      3v
 
-                                             *if GPIO2/D4 or GPIO0/D3 is used for for CS, apply an external
-                                              25kOhm pullup-down resistor otherwise reset & reset button
-                                              may not work
+                                             *most boards has 10-12kOhm pullup-up resistor on GPIO2/D4 & GPIO0/D3
+                                              for flash & boot
 
    Frameworks & Libraries:
    ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
@@ -60,8 +59,8 @@ MAX6675(cs)
 cs  - chip select
 */
 
-MAX6675 myMAX6675_01(4); //for ESP8266 use D4
-MAX6675 myMAX6675_02(5); //for ESP8266 use D3
+MAX6675 myMAX6675_01(4); //for ESP8266 change to D4 (fails to BOOT/FLASH if pin LOW)
+MAX6675 myMAX6675_02(5); //for ESP8266 change to D3 (fails to BOOT/FLASH if pin LOW)
 
 
 void setup()
