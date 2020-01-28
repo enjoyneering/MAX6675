@@ -25,15 +25,14 @@
    NodeMCU 1.0, WeMos D1 Mini...............  3v/5v*
    ESP32....................................  3v
 
-                                             *if GPIO2/D4 or GPIO0/D3 is used, apply an external
-                                              25kOhm pullup-down resistor otherwise reset & reset button
-                                              may not work
+                                              *most boards has 10-12kOhm pullup-up resistor on GPIO2/D4 & GPIO0/D3
 
    Frameworks & Libraries:
-   ATtiny Core           - https://github.com/SpenceKonde/ATTinyCore
-   ESP32 Core            - https://github.com/espressif/arduino-esp32
+   ATtiny  Core          - https://github.com/SpenceKonde/ATTinyCore
+   ESP32   Core          - https://github.com/espressif/arduino-esp32
    ESP8266 Core          - https://github.com/esp8266/Arduino
-   STM32 Core            - https://github.com/rogerclarkmelbourne/Arduino_STM32
+   STM32   Core          - https://github.com/stm32duino/Arduino_Core_STM32
+                         - https://github.com/rogerclarkmelbourne/Arduino_STM32
 
    GNU GPL license, all text above must be included in any redistribution,
    see link for details  - https://www.gnu.org/licenses/licenses.html
@@ -100,7 +99,7 @@ void MAX6675Soft::begin(void)
 
     - max SPI master clock speed is equal with board speed
       (16000000UL for 5V 16MHz/ProMini), but MAX6675 max speed is only 4.3MHz
-    - SPI_MODE0 -> capture data on clock's falling edge
+    - SPI_MODE0 -> data available shortly after the rising edge of SCK
 */
 /**************************************************************************/
 uint16_t MAX6675Soft::readRawData(void)
@@ -112,13 +111,13 @@ uint16_t MAX6675Soft::readRawData(void)
   digitalWrite(_cs, HIGH);                       //start measurement/conversion
   delay(MAX6675_CONVERSION_TIME);
 
-  digitalWrite(_sck, LOW);
+  digitalWrite(_sck, LOW);                       //do we need it???
   digitalWrite(_cs, LOW);                        //set CS low to enable SPI interface for MAX667
 
   for (int8_t i = 16; i > 0; i--)                //read 16-bits via software SPI, in order MSB->LSB (D15..D0 bit)
   {
     digitalWrite(_sck, HIGH);
-    rawData = (rawData << 1) | digitalRead(_so);
+    rawData = (rawData << 1) | digitalRead(_so); //emulate SPI_MODE0, data available shortly after the rising edge of SCK
     digitalWrite(_sck, LOW);
   }
 
