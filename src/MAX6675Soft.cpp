@@ -73,6 +73,7 @@ void MAX6675Soft::begin(void)
   digitalWrite(_cs, HIGH); //disables SPI interface for MAX31855, but it will initiate measurement/conversion
 
   pinMode(_so, INPUT);
+
   pinMode(_sck, OUTPUT);
   digitalWrite(_sck, LOW); 
 }
@@ -109,9 +110,9 @@ uint16_t MAX6675Soft::readRawData(void)
   digitalWrite(_cs, LOW);                        //stop  measurement/conversion
   delayMicroseconds(1);                          //4MHz  is 0.25usec, do we need it???
   digitalWrite(_cs, HIGH);                       //start measurement/conversion
+
   delay(MAX6675_CONVERSION_TIME);
 
-  digitalWrite(_sck, LOW);                       //do we need it???
   digitalWrite(_cs, LOW);                        //set CS low to enable SPI interface for MAX667
 
   for (int8_t i = 16; i > 0; i--)                //read 16-bits via software SPI, in order MSB->LSB (D15..D0 bit)
